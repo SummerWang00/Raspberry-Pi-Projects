@@ -18,6 +18,7 @@ int main(int argc, char** argv) {
     } else {
         return -1;
     }
+    
     PN532_SamConfiguration(&pn532);
     printf("Waiting for RFID/NFC card...\r\n");
     while (1)

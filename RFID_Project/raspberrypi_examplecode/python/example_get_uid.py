@@ -25,14 +25,15 @@ if __name__ == '__main__':
         print('Waiting for RFID/NFC card...')
         while True:
             # Check if a card is available to read
-            uid = pn532.read_passive_target(timeout=0.5)
+            uid = pn532.read_passive_target(timeout=10)
             print('.', end="")
             # Try again if no card is available.
             if uid is None:
                 continue
             print('Found card with UID:', [hex(i) for i in uid])
-            
+     
     except Exception as e:
-        print(e)
+      print(e)
+      
     finally:
         GPIO.cleanup()

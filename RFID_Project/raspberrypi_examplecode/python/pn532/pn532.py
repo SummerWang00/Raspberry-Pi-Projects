@@ -347,7 +347,7 @@ class PN532:
         # check the command was executed as expected.
         self.call_function(_COMMAND_SAMCONFIGURATION, params=[0x01, 0x14, 0x01])
 
-    def read_passive_target(self, card_baud=_MIFARE_ISO14443A, timeout=1):
+    def read_passive_target(self, card_baud=_MIFARE_ISO14443A, timeout=10):
         """Wait for a MiFare card to be available and return its UID when found.
         Will wait up to timeout seconds and return None if no card is found,
         otherwise a bytearray with the UID of the found card is returned.

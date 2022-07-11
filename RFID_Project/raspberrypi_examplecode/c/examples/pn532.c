@@ -228,8 +228,7 @@ int PN532_SamConfiguration(PN532* pn532) {
   *     otherwise a bytearray with the UID of the found card is returned.
   * @retval: Length of UID, or -1 if error.
   */
-int PN532_ReadPassiveTarget(
-    PN532* pn532,
+int PN532_ReadPassiveTarget(  //??? 
     uint8_t* response,
     uint8_t card_baud,
     uint32_t timeout
