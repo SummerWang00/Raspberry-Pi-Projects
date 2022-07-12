@@ -17,3 +17,5 @@ to open a file.
 with open (file, "r") as json_file:
     data = json.load(json_file)
     print(data["names"])
+
+##did something on the new code
