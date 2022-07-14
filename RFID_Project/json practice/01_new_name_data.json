@@ -11,14 +11,6 @@
         {
             "firstname": "Alex",
             "ID#": 3
-        },
-        {
-            "firstname": "Joe",
-            "ID#": 4
-        },
-        {
-            "firstname": "Joe",
-            "age": 40
         }
     ]
 }
