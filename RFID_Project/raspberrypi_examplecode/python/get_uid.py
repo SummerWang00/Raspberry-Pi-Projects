@@ -44,7 +44,6 @@ if __name__ == '__main__':
             #imagine I open the json database file here
             # and then store that into 
             # for i in name_data:hvjhvj
-              
     
     except Exception as e:
         print(e)
