@@ -10,8 +10,10 @@ int main(void) {
 
     printf("Set\n");
     gpioSetMode(18, PI_INPUT);
-    gpioSetMode(2, PI_OUTPUT);
-    gpioSleep(PI_TIME_RELATIVE, 0, 100000);  // sleep for 100,000us, 100ms, 0.1s
+ audo
+ 
+ 
+     gpioSleep(PI_TIME_RELATIVE, 0, 100000);  // sleep for 100,000us, 100ms, 0.1s
 
     int secs, mics;
     
