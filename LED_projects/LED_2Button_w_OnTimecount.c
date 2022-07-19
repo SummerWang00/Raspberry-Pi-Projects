@@ -10,13 +10,10 @@ int main(void) {
 
     printf("Set\n");
     gpioSetMode(18, PI_INPUT);
- audo
- 
- 
-     gpioSleep(PI_TIME_RELATIVE, 0, 100000);  // sleep for 100,000us, 100ms, 0.1s
+    gpioSleep(PI_TIME_RELATIVE, 0, 100000);  // sleep for 100,000us, 100ms, 0.1s
 
     int secs, mics;
-    
+
     if ((gpioGetMode(2) != PI_OUTPUT) | (gpioGetMode(18) != PI_INPUT)) {  // check for wrong I/O mode
         printf("Wrong PIN Mode on Pin 2 or 18\n");
     }
