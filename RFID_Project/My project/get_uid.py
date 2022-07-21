@@ -28,13 +28,15 @@ if __name__ == '__main__':
         # pn532 = PN532_SPI(debug=False, reset=20, cs=4)
         pn532 = PN532_I2C(debug=False, reset=20, req=16)
         #pn532 = PN532_UART(debug=False, reset=20)
-
+        # SET UP
         ic, ver, rev, support = pn532.get_firmware_version()
         print('Found PN532 with firmware version: {0}.{1}'.format(ver, rev))
 
         # Configure PN532 to communicate with MiFare cards
         pn532.SAM_configuration()
 
+        #Start of program, choose mode
+        input('Enter "r" to for ID reader mode and "e" to add or remove a person from database: ')
         print('Waiting for RFID/NFC card...')
         ID_undetected_time: int = 0
         while True:
@@ -42,7 +44,8 @@ if __name__ == '__main__':
             # read_passive_target get the uid and store it in variable uid.
 
             # The message doesn't print after so long idk why???
-            # I want to print "Still waiting" after 1o timeouts. Every  loops
+            # It's the print statemenet's fault. Buffer doesn't flush immediately
+            # I want to print "Still waiting" after 1o timeouts. Every  loop
 
             if ID_undetected_time == secs:
                 ID_undetected_time = 0
@@ -57,19 +60,17 @@ if __name__ == '__main__':
             if uid is None:
                 continue
 
-            # Display UID information and reset counter
-            # print('Found card with UID:', [hex(i) for i in uid])  # i is each digit in a hex number
-            # print('Found card with UID:', uid.hex())                # .hex() conbines uid together
+            # Display UID information, reset counter
+            # print('Found card with UID:', [hex(i) for i in uid])    #i is each digit in a hex number, from example
+            # print('Found card with UID:', uid.hex())                #.hex() conbines uid together
 
-            # use int_uid to store the reader input to compare with database
+            #int_uid stores the reader input to compare with database
             int_uid = int(uid.hex(), 16)
             print('Found card with UID:', int_uid) # converts hex number into 16-bit int
 
             # print(type(uid))
-            # print("")
             ID_undetected_time = 0
 
-            # print(uid[0])
             # print('Found card with UID:', [uid.decode()])   #prints the same as hex(i)
             # print(type((uid).decode()))  #this returned class 'bytes', so it is ID_undetected_time byte object? Using the function byte() can turn ID_undetected_time list/number into ID_undetected_time byte object
                                             #this is very weird, error message 'utf-8' codec can't decode byte 0xb1 in position 2: invalid start byte
