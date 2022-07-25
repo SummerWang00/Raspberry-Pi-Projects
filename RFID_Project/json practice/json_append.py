@@ -41,7 +41,7 @@ def add_person():  #name: str, id: int
             print("Error: Invalid number")
 
     print(f"{id} added.")
-    print("It's the  entry! Congrats!")   # try to access the item order number in json file to say this is the 4th person or something
+    print("It's the {} entry! Congrats!")   # try to access the item order number in json file to say this is the 4th person or something
     print(f"{name}'s information added! Type 'a' to add one more person, anything else to quit: ")
     adding = input("")
     if (adding == 'a'):
@@ -53,7 +53,7 @@ def add_person():  #name: str, id: int
 
 # deletes a person's data, find the person through unique identifiers, could be name or ID.
 def remove_person():
-    view_data()
+    #view_data()
     new_data = []
     # file opening
     with open(filename, "r") as f:
@@ -94,17 +94,7 @@ def select_mode():
             print("Error, please start over")
             select_mode()
 
-with open(filename) as json_file:
-    data = json.load(json_file) # open the json file
-    #select_mode()
-    # name = "Hailie"
-    # id = "123907"
-    name, id = add_person()
-    x = {"firstname": name, "ID#": id}
-    #y = {"firstname": "Joseph", "age": 29, "ID#": 1823908214214}  # what's being added
-    data["names"].append(x)
 
-write_json(data)
 
 def safe_int_input():
     num_retries = 3
@@ -116,3 +106,39 @@ def safe_int_input():
                 print("Error: Invalid number")
             else:
                 raise error
+
+#this is equal to main function
+with open(filename) as json_file:
+    data = json.load(json_file) # open the json file
+    #select_mode()
+    # Question: open file first?
+    # Or, write a function to open file in different modes and pass a parameter to see
+    # what mode to use? I'll figure out tomorrow morning.
+
+
+    name, id = add_person()
+    x = {"firstname": name, "ID#": id}
+    #y = {"firstname": "Joseph", "age": 29, "ID#": 1823908214214}  # what's being added
+    data["names"].append(x)
+
+while (True):
+    display_choices()
+    choice = input("\nEnter Number:")
+    if choice == "1":
+        view_data()
+        break
+    elif choice == "2":
+        add_person()
+        break
+    elif choice == "3":
+        remove_person()
+        break
+    elif choice == "4":
+        edit_Person()
+        break
+    elif choice == "5":
+        break
+    else:
+        print("Nothing is selected, try again")
+
+write_json(data)
