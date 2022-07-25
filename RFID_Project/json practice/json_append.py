@@ -8,44 +8,13 @@ def write_json(data: object, filename: str = filename):
     with open(filename, "w") as f:
         json.dump(data, f, indent=4)
 
-def add_Person():  #name: str, id: int
-    name = input("Please enter firstname: ")
-    print(f"Firstname {name} added")
-
-    while True:
-        try:
-            id = int(input("What is her/his ID#? "))
-            break
-        except:
-            print("Error: Invalid number")
-
-    print(f"{id} added.")
-    print("It's the 3rd entry! Congrats!")
-    print(f"{name}'s information added! Type 'a' to add one more person, anything else to quit: ")
-    adding = input("")
-    if (adding == 'a'):
-        add_Person()
-    else:
-        print("Add no more.")
-    print("Added")
-    return name, id
-
-def remove_Person():
-    view_data()
-    new_data = []
-    with open(filename, "r") as f:
-        temp = json.load(f)
-        data_length = len(temp) - 1
-    print("which index number would you like to delete?")
-    option = input(f"Select a number in 0-{data_length}")
-    i = 0
-    for entry in temp:
-        if i == int(option):
-            pass
-            i = i+1
-        else:
-            
-    print("removed")
+def display_choices():
+    print("Database for names!")
+    print("(1) View Data")
+    print("(2) Add Data")
+    print("(3) Delete Data")
+    print("(4) Edit Data")
+    print("(5) Exit the program")
 
 def view_data():
     with open(filename, "r") as f:
@@ -59,14 +28,67 @@ def view_data():
             print(f"ID#: {id}", end="\n\n")
             i = i+1
 
+def add_person():  #name: str, id: int
+    
+    name = input("Please enter firstname: ")
+    print(f"Firstname {name} added")
+
+    while True:
+        try:
+            id = int(input("What is her/his ID#? "))
+            break
+        except:
+            print("Error: Invalid number")
+
+    print(f"{id} added.")
+    print("It's the  entry! Congrats!")   # try to access the item order number in json file to say this is the 4th person or something
+    print(f"{name}'s information added! Type 'a' to add one more person, anything else to quit: ")
+    adding = input("")
+    if (adding == 'a'):
+        add_person()
+    else:
+        print("Add no more.")
+    print("Added")
+    return name, id
+
+# deletes a person's data, find the person through unique identifiers, could be name or ID.
+def remove_person():
+    view_data()
+    new_data = []
+    # file opening
+    with open(filename, "r") as f:
+        temp = json.load(f)
+        data_length = len(temp) - 1
+    print("which index number would you like to delete?")
+    option = input(f"Select a number in 0-{data_length}")
+    i = 0
+    # find the index the user wants to delete
+    for entry in temp:
+        if i == int(option):
+            pass
+            i = i+1
+        else:
+            new_data.append(entry)
+            i = i+1
+    with open(filename, "w") as f:
+        json.dump(new_data, f, indent=4) 
+            
+    print("removed")
+
+# def edit_Person():
+#     view_data()
+#     new_data = []
+
+
+# based on choice input, handles which function to execute. If error occurs, prompt for a new choice entry
 def select_mode():
     while True:
         mode_choice = input("Type 'a'(lowercase) to add a person's information or 'd' to add: ")
         if (mode_choice == 'a'):
-            add_Person()
+            add_person()
             break
         elif (mode_choice == 'd'):
-            remove_Person()
+            remove_person()
             break
         else:
             print("Error, please start over")
@@ -77,7 +99,7 @@ with open(filename) as json_file:
     #select_mode()
     # name = "Hailie"
     # id = "123907"
-    name, id = add_Person()
+    name, id = add_person()
     x = {"firstname": name, "ID#": id}
     #y = {"firstname": "Joseph", "age": 29, "ID#": 1823908214214}  # what's being added
     data["names"].append(x)
