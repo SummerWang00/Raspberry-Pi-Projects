@@ -12,22 +12,44 @@ access = False
 filename = "C:\\Users\\xwang\\Documents\\repos\\Raspberry-Pi-Projects\\RFID_Project\\My project\\name.json"
 state: int
 
-class State(Enum):
-    ADMIN = 0
-    NORMAL = 1
+class Init_state(Enum):
+    SELECT = 0
+    ADMIN = 1
+    NORMAL = 2
 
-    ADD = 2
-    REMOVE = 3
-    EDIT = 4
-    DISPLAY = 5
+    # ADD = 2
+    # REMOVE = 3
+    # EDIT = 4
+    # DISPLAY = 5
 
-    ALLOW = 10
+    # ALLOW = 10
 
-    TYPE = 20
-    SCAN = 21
+    # TYPE = 20
+    # SCAN = 21
+
+class Admin_state(Enum):
+    SELECT = 0
+    ADD = 1
+    REMOVE = 2
+    EDIT = 3
+    DISPLAY = 4
+
+class Normal_state(Enum):
+    LOCKED = 0
+    UNLOCKED = 1
+
+class Admin_add_state(Enum):  # what is select for? Why did you say it's good to have, I thought when you enter add state user will be prompted to select
+    SELECT = 0
+    SCAN = 1
+    TYPE = 2
+
+class Admin_remove_state(Enum):
+    SELECT = 0
+    SCAN = 1
+    NAME = 2
+    TYPE = 3
 
 def add_person():  #name: str, int_uid: int
-
     name = input("Please enter firstname: ")
     print(f"Firstname {name} added")
 
@@ -97,22 +119,28 @@ def init_choices():
     print("(1) Normal Mode - start scanning for ID")
 
 def admin_choices():
-    print("What do you want to do? \nEnter (2) to add a person, (3) to remove a person.")
+    print("What do you want to do? \nEnter (1) to add a person, (2) to remove a person.")
 
 while (True):
-    init_choices()
+    init_choices()  # with this function, I don't think I need select state. If you put in the select state, how do you do that? Do you need a prompt to put in 0 to enter select state.
     state = safe_int_input("\nEnter Number:")
 
     # make states
     if state == State.ADMIN:
         admin_choices()
         state = safe_int_input()
-        if state == State.ADD:
+        if state == Admin_state.ADD.value:
             add_person()
-        elif state == State.REMOVE:
+            state = 0
+
+        elif state == Admin_state.REMOVE.value:
             remove_person()
-        elif state == State.EDIT:
+            state = 0
+            break
+        elif state == Admin_state.EDIT.value:
             edit_person()
+            state = 0
+            continue
         else:
             print("Invalid input, enter again")
             break
@@ -127,28 +155,16 @@ while (True):
             #     int_id = safe_int_input("please enter your 9-digit ID:")
 
     elif state == State.NORMAL:
-        int_id = scan()  #scan and output access
+        int_id = scan()  #scan and output id
+        access = check_access(int_id)
+        ''' if access == True:
+                #green LED lights up and actuator contracts
+            else:
+                red LED lights up and buzzer buzzs continuously
+        '''
 
     else:
-        print("Invalid input, enter again")
-        break
-
-    # if choice == "1":
-    #     view_data()
-    #     break
-    # elif choice == "2":
-    #     add_person()
-    #     break
-    # elif choice == "3":
-    #     remove_person()
-    #     break
-    # elif choice == "4":
-    #     edit_person()
-    #     break
-    # elif choice == "5":
-    #     break
-    # else:
-    #     print("Nothing is selected, try again")
+        print("Invalid input, enter a number from the available choices again")
 
 write_json(data)
 
@@ -212,23 +228,20 @@ def scan():  ## returns ID number in int
     return int_uid
 
 def check_access(int_uid):
-            with open (file, encoding="utf-8",) as json_file: #encoding="utf-8"
-                data = json.load(json_file)
-                name_data = (data["names"])       #make name_data into a list of individual dictionary\
+    access = False
+    with open (file, encoding="utf-8",) as json_file: #encoding="utf-8"
+        data = json.load(json_file)
+        name_data = (data["names"])       #make name_data into a list of individual dictionary\
 
-                for i in name_data:
-                    name = (i["name"])   # adding end="" get rid of the audo new line character
-                    ID = (i["ID#"])
-                    if int_uid == ID:
-                        # Green LED light up
-                        access = True
-                        print(f"This is {name}'s card, access granted, door opened", end="\n\n")
-                        break
-                    else:
-                        continue
+        for i in name_data:
+            name = (i["name"])   # adding end="" get rid of the audo new line character
+            ID = (i["ID#"])
+            if int_uid == ID:    # ID exist in database
+                access = True
+                print(f"This is {name}'s card, access granted, door opened", end="\n\n")
+                break
+            else:
+                continue
 
-                if access == False:
-                    print("I don't know you, access denied!")  # when this line is indented it turns grey
-
-            access = False
-            time.sleep(1)
+    time.sleep(1)
+    return access
