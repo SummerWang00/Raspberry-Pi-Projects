@@ -22,7 +22,7 @@ access = False
 if __name__ == '__main__':
     try:
         # Uncomment corresponding lines below to configure interface, only keep one line uncommented at a time.
-        # Jumpter configuration -
+        # Jumper configuration -
         # SPI 1 0   I2C 0 1    UART 0 0
         #     1 1       1 1         1 1
         #     0 1       1 0         1 1
