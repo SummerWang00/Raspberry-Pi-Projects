@@ -1,100 +1,13 @@
-from pn532 import *
-
-import RPi.GPIO as GPIO
-import time
-import json
 from enum import Enum
 from unicodedata import name
-import scanner_get_id.py  # I want to use the scanner code through importing instead of copying and pasting to make it a function
+
+import scanner_get_id.py
 
 secs = 10
 access = False
+time_to_stop_scanning = 0  # every time scan() runs I want it to be in effect for 20 seconds
 filename = "C:\\Users\\xwang\\Documents\\repos\\Raspberry-Pi-Projects\\RFID_Project\\My project\\name.json"
-state: int = 0 # is it a good idea to define it here? Why?
-
-
-while (True):
-    init_choices()  # with this function, I don't think I need select state. If you put in the select state, how do you do that? Do you need a prompt to put in 0 to enter select state.
-    state = safe_int_input("\nEnter Number:")
-
-    # make states
-    if state == State.ADMIN:
-        admin_choices()
-        state = safe_int_input()
-        if state == Admin_state.ADD.value:
-            add_person()
-            state = 0
-            continue
-        elif state == Admin_state.REMOVE.value:
-            remove_person()
-            state = 0
-            continue
-        elif state == Admin_state.EDIT.value:
-            edit_person()
-            state = 0
-            continue
-        else:
-            print("Invalid input, enter again")
-            break
-
-            # how_to_add = safe_int_input("Enter 0 to add by scanning, or 1 to type ID manually:")
-            # if how_to_add == 0:
-            #     int_id = scan()  #I need to write scan function to scan using ID. 
-            # #   check_access(int_id)  I forgot why I needed to check access
-            # elif how_to_add == 1:
-            #     #insert logic to type ID manually
-            #     print("Selected to add ")
-            #     int_id = safe_int_input("please enter your 9-digit ID:")
-
-    elif state == State.NORMAL:
-        int_id = scan()  #scan and output id
-        access = check_access(int_id)
-        ''' if access == True:
-                #green LED lights up and actuator contracts
-            else:
-                red LED lights up and buzzer buzzs continuously
-        '''
-
-    else:
-        print("Invalid input, enter a number from the available choices again")
-
-
-class Init_state(Enum):
-    SELECT = 0
-    ADMIN = 1
-    NORMAL = 2
-
-    # ADD = 2
-    # REMOVE = 3
-    # EDIT = 4
-    # DISPLAY = 5
-
-    # ALLOW = 10
-
-    # TYPE = 20
-    # SCAN = 21
-
-class Admin_state(Enum):
-    SELECT = 0
-    ADD = 1
-    REMOVE = 2
-    EDIT = 3
-    DISPLAY = 4
-
-class Normal_state(Enum):
-    LOCKED = 0
-    UNLOCKED = 1
-
-class Admin_add_state(Enum):  # what is select for? Why did you say it's good to have, I thought when you enter add state user will be prompted to select
-    SELECT = 0
-    SCAN = 1
-    TYPE = 2
-
-class Admin_remove_state(Enum):
-    SELECT = 0
-    SCAN = 1
-    NAME = 2
-    TYPE = 3
+state: int = 0 # is it a good idea to define it here? Why? - good idea, because it'sd good practice to enter a default state at the beginning of a program
 
 def add_person():
     # Need to figure out a way to add multiple people one after another without exiting this state
@@ -179,6 +92,9 @@ def init_choices():
 def admin_choices():
     print("What do you want to do? \nEnter (1) to add a person, (2) to remove a person.")
 
+def normal_prompt():
+    print("Starting normal mode, waiting to scan ID...")
+
 def view_data():
     with open(filename, "r") as f:
         temp = json.load(f)
@@ -192,7 +108,7 @@ def view_data():
             i = i+1
 
 # dump file content into data.
-def scan():  ## returns ID number in int
+def scan():  # returns ID number in int
     if __name__ == '__main__':
         try:
             # SET UP
@@ -205,18 +121,24 @@ def scan():  ## returns ID number in int
             print('Waiting for RFID/NFC card...')
             ID_undetected_time: int = 0
             while True:
-                if ID_undetected_time == secs:
-                    ID_undetected_time = 0
-                    print("Where's the card? Still waiting~")
-                print('.', end="", flush=True) #flush so that each dot in the buffer is flushed right after it enters the buffer
+                # flush, so that each dot in the buffer is flushed right after it enters the buffer
+                print('.', end="", flush=True) 
                 uid = pn532.read_passive_target(timeout=1)
                 ID_undetected_time = ID_undetected_time + 1  # only scan every one second.
 
+                if ID_undetected_time == secs: #ANY IDEA WHAT to call this variable
+                    ID_undetected_time = 0
+                    print("Where's the card? Still waiting~")
+
                 if uid is None:
                     continue
+                
                 int_uid = int(uid.hex(), 16)
                 print('Found card with UID:', int_uid) # prints out card ID in int
 
+# dunno what to do here i was gonna do something
+                if 
+                break
     # returns integer ID number
         except Exception as e:
             print(e)
@@ -257,3 +179,97 @@ def add_to_database(name: str, ID: int):  # this goes inside of add_person to ad
 def write_json(data: object, filename: str = filename):
     with open(filename, "w") as f:
         json.dump(data, f, indent=4)
+  
+class Init_state(Enum):
+    SELECT = 0
+    ADMIN = 1
+    NORMAL = 2
+
+    # ADD = 2
+    # REMOVE = 3
+    # EDIT = 4
+    # DISPLAY = 5
+
+    # ALLOW = 10
+
+    # TYPE = 20
+    # SCAN = 21
+
+class Admin_state(Enum):
+    SELECT = 0
+    ADD = 1
+    REMOVE = 2
+    EDIT = 3
+    DISPLAY = 4
+
+class Normal_state(Enum):
+    LOCKED = 0
+    UNLOCKED = 1
+
+class Admin_add_state(Enum):  # what is select for? Why did you say it's good to have, I thought when you enter add state user will be prompted to select
+    SELECT = 0
+    SCAN = 1
+    TYPE = 2
+
+class Admin_remove_state(Enum):
+    SELECT = 0
+    SCAN = 1
+    NAME = 2
+    ID = 3
+
+class Admin_edit_state(Enum):
+    SELECT = 0
+    SCAN = 1
+    NAME = 2
+    ID = 3   # ask for manual ID input
+
+# this acts like main function in C
+while True:
+    init_choices()  # with this function, I don't think I need select state. If you put in the select state, how do you do that? Do you need a prompt to put in 0 to enter select state.
+    state = safe_int_input("\nEnter Number:")
+    # check if valid before assigning
+    # make states
+    if state == State.ADMIN:
+        admin_choices()
+        state = safe_int_input()
+        if state == Admin_state.ADD.value:
+            add_person()
+            state = 0
+            continue
+        elif state == Admin_state.REMOVE.value:
+            remove_person()
+            state = 0
+            continue
+        elif state == Admin_state.EDIT.value:
+            edit_person()
+            state = 0
+            continue
+        else:
+            print("Invalid input, enter again")
+            break
+
+            # how_to_add = safe_int_input("Enter 0 to add by scanning, or 1 to type ID manually:")
+            # if how_to_add == 0:
+            #     int_id = scan()  #I need to write scan function to scan using ID. 
+            # #   check_access(int_id)  I forgot why I needed to check access
+            # elif how_to_add == 1:
+            #     #insert logic to type ID manually
+            #     print("Selected to add ")
+            #     int_id = safe_int_input("please enter your 9-digit ID:")
+
+    # Normal mode: scanner keeps running until the stop action - pressing a button or key in a key. 
+    elif state == State.NORMAL:
+        while True:
+            normal_prompt()
+            int_id = scan()  #scan and output id
+            access = check_access(int_id)
+            ''' if access == True:
+                    #green LED lights up and actuator contracts
+                else:
+                    red LED lights up and buzzer buzzs continuously
+            '''
+
+
+    else:
+        print("Invalid input, enter a number from the available choices again")
+

@@ -6,6 +6,7 @@ is the most reliable and universally supported.
 After initialization, try waving various 13.56MHz RFID cards over it!
 """
 
+# import libraries and packages
 from pn532 import *
 from unicodedata import name
 
