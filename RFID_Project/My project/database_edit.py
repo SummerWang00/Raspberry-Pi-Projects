@@ -1,7 +1,7 @@
 from enum import Enum
 from unicodedata import name
 
-import scanner_get_id.py
+import scanner_get_id
 
 secs = 10
 access = False
@@ -86,8 +86,8 @@ def safe_int_input(prompt: str):  # If anything entered isn't an int, ask user t
 
 def init_choices():
     print("Database for names! Enter respective numbers to proceed")
-    print("(0) Admin Mode - can access and modify database(Valid account and password needed)")
-    print("(1) Normal Mode - start scanning for ID")
+    print("(1) Admin Mode - can access and modify database(Valid account and password needed)")
+    print("(2) Normal Mode - start scanning for ID")
 
 def admin_choices():
     print("What do you want to do? \nEnter (1) to add a person, (2) to remove a person.")
@@ -137,8 +137,8 @@ def scan():  # returns ID number in int
                 print('Found card with UID:', int_uid) # prints out card ID in int
 
 # dunno what to do here i was gonna do something
-                if 
-                break
+                # if 
+                # break
     # returns integer ID number
         except Exception as e:
             print(e)
@@ -226,10 +226,10 @@ class Admin_edit_state(Enum):
 # this acts like main function in C
 while True:
     init_choices()  # with this function, I don't think I need select state. If you put in the select state, how do you do that? Do you need a prompt to put in 0 to enter select state.
-    state = safe_int_input("\nEnter Number:")
+    state = safe_int_input("\nEnter Number: ")
     # check if valid before assigning
     # make states
-    if state == State.ADMIN:
+    if state == Init_state.ADMIN.value:
         admin_choices()
         state = safe_int_input()
         if state == Admin_state.ADD.value:
@@ -258,7 +258,7 @@ while True:
             #     int_id = safe_int_input("please enter your 9-digit ID:")
 
     # Normal mode: scanner keeps running until the stop action - pressing a button or key in a key. 
-    elif state == State.NORMAL:
+    elif state == Init_state.NORMAL.value:
         while True:
             normal_prompt()
             int_id = scan()  #scan and output id
