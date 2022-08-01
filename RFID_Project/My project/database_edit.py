@@ -84,16 +84,13 @@ def safe_int_input(prompt: str):  # If anything entered isn't an int, ask user t
             print("Numbers only please!")
     return result
 
-def init_choices():
+def display_init_choices():
     print("Database for names! Enter respective numbers to proceed")
     print("(1) Admin Mode - can access and modify database(Valid account and password needed)")
     print("(2) Normal Mode - start scanning for ID")
 
 def admin_choices():
     print("What do you want to do? \nEnter (1) to add a person, (2) to remove a person.")
-
-def normal_prompt():
-    print("Starting normal mode, waiting to scan ID...")
 
 def view_data():
     with open(filename, "r") as f:
@@ -119,7 +116,8 @@ def scan():  # returns ID number in int
             # Configure PN532 to communicate with MiFare cards
             pn532.SAM_configuration()
             print('Waiting for RFID/NFC card...')
-            ID_undetected_time: int = 0
+            ID_undetected_time: int = 0  # once this time reaches 10 secs, ask where the card is/
+            ID_scanning_time: int = 0    # once this time reaches 20 secs, stop scanning and return ID number. Later I have to make a mechanism so that if no value 
             while True:
                 # flush, so that each dot in the buffer is flushed right after it enters the buffer
                 print('.', end="", flush=True) 
@@ -136,7 +134,8 @@ def scan():  # returns ID number in int
                 int_uid = int(uid.hex(), 16)
                 print('Found card with UID:', int_uid) # prints out card ID in int
 
-# dunno what to do here i was gonna do something
+
+# I rememebr what I wanted to do, to make a mechanism to stop 
                 # if 
                 # break
     # returns integer ID number
@@ -225,8 +224,9 @@ class Admin_edit_state(Enum):
 
 # this acts like main function in C
 while True:
-    init_choices()  # with this function, I don't think I need select state. If you put in the select state, how do you do that? Do you need a prompt to put in 0 to enter select state.
-    state = safe_int_input("\nEnter Number: ")
+    display_init_choices()  # with this function, I don't think I need select state. If you put in the select state, how do you do that? Do you need a prompt to put in 0 to enter select state.
+    state = safe_int_input("\nEnter Number:")
+
     # check if valid before assigning
     # make states
     if state == Init_state.ADMIN.value:
@@ -260,9 +260,16 @@ while True:
     # Normal mode: scanner keeps running until the stop action - pressing a button or key in a key. 
     elif state == Init_state.NORMAL.value:
         while True:
-            normal_prompt()
+            #normal_prompt()
+            print("Starting normal mode, waiting to scan ID...")
             int_id = scan()  #scan and output id
             access = check_access(int_id)
+            if access == True:
+                print("Door opened")
+            else:
+                print("No access. Try again...")
+
+            # If I want to stop scanning by typing a letter and not stop the entire function... what can I do?
             ''' if access == True:
                     #green LED lights up and actuator contracts
                 else:
