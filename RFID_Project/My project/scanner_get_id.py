@@ -10,7 +10,6 @@ After initialization, try waving various 13.56MHz RFID cards over it!
 from pn532 import *
 from unicodedata import name
 
-
 import RPi.GPIO as GPIO
 import json
 import time
@@ -30,7 +29,7 @@ if __name__ == '__main__':
         #     0 1       1 0         1 1
         # pn532 = PN532_SPI(debug=False, reset=20, cs=4)
         pn532 = PN532_I2C(debug=False, reset=20, req=16)
-        #pn532 = PN532_UART(debug=False, reset=20)
+        # pn532 = PN532_UART(debug=False, reset=20)
 
         # SET UP
 
@@ -41,7 +40,6 @@ if __name__ == '__main__':
         pn532.SAM_configuration()
 
         #Start of program, choose mode
-        input('Enter "r" to for ID reader mode and "e" to add or remove a person from database: ')
         print('Waiting for RFID/NFC card...')
         ID_undetected_time: int = 0
         while True:
