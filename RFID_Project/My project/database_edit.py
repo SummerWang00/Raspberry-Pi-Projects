@@ -1,7 +1,20 @@
 from enum import Enum
 from unicodedata import name
+from pn532 import *
+from unicodedata import name
 
-import scanner_get_id
+
+import RPi.GPIO as GPIO
+import json
+import time
+
+file = "name_ID_data.json"
+
+# global variables
+secs = 10
+access = False
+
+import scanner_get_id as scanner
 
 secs = 10
 access = False
@@ -119,20 +132,27 @@ def scan():  # returns ID number in int
             ID_undetected_time: int = 0  # once this time reaches 10 secs, ask where the card is/
             ID_scanning_time: int = 0    # once this time reaches 20 secs, stop scanning and return ID number. Later I have to make a mechanism so that if no value 
             while True:
-                # flush, so that each dot in the buffer is flushed right after it enters the buffer
-                print('.', end="", flush=True) 
-                uid = pn532.read_passive_target(timeout=1)
-                ID_undetected_time = ID_undetected_time + 1  # only scan every one second.
-
-                if ID_undetected_time == secs: #ANY IDEA WHAT to call this variable
+                if ID_undetected_time == secs:
                     ID_undetected_time = 0
                     print("Where's the card? Still waiting~")
 
+                print('.', end="", flush=True) 
+                uid = pn532.read_passive_target(timeout=1)
+                ID_undetected_time = ID_undetected_time -+ 1  # only scan every one second.
+
+                if ID_undetected_time == secs: #ANY IDEA WHAT to call this variable
+                    ID_undetected_time = 0
+                    print("Stopped scanning.")
+                    #continue
+                    #print("Where's the card? Still waiting~")
+
                 if uid is None:
                     continue
-                
-                int_uid = int(uid.hex(), 16)
-                print('Found card with UID:', int_uid) # prints out card ID in int
+                else:
+                    break
+
+            int_uid = int(uid.hex(), 16)
+            print('Found card with UID:', int_uid)
 
 
 # I rememebr what I wanted to do, to make a mechanism to stop 
@@ -161,6 +181,10 @@ def check_access(int_uid):
                 break
             else:
                 continue
+        if access == True:
+            print(f"This is {name}'s card, access granted, door opened", end="\n\n")
+        else:
+            print("I don't know you, access denied!\n")  # when this line is indented it turns grey
 
     time.sleep(1)
     return access
@@ -263,11 +287,13 @@ while True:
             #normal_prompt()
             print("Starting normal mode, waiting to scan ID...")
             int_id = scan()  #scan and output id
-            access = check_access(int_id)
-            if access == True:
-                print("Door opened")
-            else:
-                print("No access. Try again...")
+            check_access(int_id)
+            # why does't this print prompts inside of check_access()?
+            #access = scanner.check_access(int_id)  #scan and access happen every 1 second
+            # if access == True:
+            #     print("Door opened")
+            # else:
+            #     print("No access. Try again...")
 
             # If I want to stop scanning by typing a letter and not stop the entire function... what can I do?
             ''' if access == True:
