@@ -238,36 +238,32 @@ class Admin_edit_state(Enum):
     ID = 3
 
 # acts like main function in C
-display_init_choices()
-state = safe_int_input("\nEnter Number: ")
-while True:
-    if state == Init_state.ADMIN.value:
-        display_admin_choices()
-        state = safe_int_input("\nEnter Number: ")
+
+def admin_mode():
+    while True:
         if state == Admin_state.ADD.value:
             add_person()
             state = 0
-            continue
+            break
         elif state == Admin_state.REMOVE.value:
             remove_person()
             state = 0
-            continue
+            break
         elif state == Admin_state.EDIT.value:
             edit_person()
             state = 0
-            continue
+            break
         elif state == Admin_state.SELECT.value:
             print("Going back to main manu")
-            continue
+            break
         elif state == Admin_state.DISPLAY.value:
             display_data()
             print("What do you want to do next?\n")
         else:
             print("Invalid input, enter again")
-            break
+            display_init_choices()
+            state = safe_int_input("\nEnter Number: ")
 
-        display_init_choices()
-        state = safe_int_input("\nEnter Number: ")
             # how_to_add = safe_int_input("Enter 0 to add by scanning, or 1 to type ID manually:")
             # if how_to_add == 0:
             #     int_id = scan()  #I need to write scan function to scan using ID. 
@@ -277,37 +273,48 @@ while True:
             #     print("Selected to add ")
             #     int_id = safe_int_input("please enter your 9-digit ID:")
 
-    # Normal mode: scanner keeps running until the stop action - pressing a button or key in a key. 
-    elif state == Init_state.NORMAL.value:
-        while True:
-            print("Starting normal mode, waiting to scan ID...")
-            int_id = scan()
-            check_access(int_id)
-            normal_or_admin = safe_int_input("Want to stay in normal mode(Enter 1), or go to admin mode? (Enter 2)")
-            if normal_or_admin == 1:
-                continue
+# Normal mode: scanner keeps running until the stop action - pressing a button or key in a key. 
+def normal_mode():
+    while True:
+        print("Starting normal mode, waiting to scan ID...")
+        int_id = scan()
+        check_access(int_id)
+        normal_or_admin = safe_int_input("Want to stay in normal mode(Enter 1), or go to admin mode? (Enter 2)")
+        if normal_or_admin == 1:
+            continue
+        else:
+            print("Entering admin mode.", end="", flush=True)
+            time.sleep(0.5)
+            print(".", end="", flush=True)
+            time.sleep(0.5)
+            print(".", flush=True)
+            time.sleep(0.5)
+        
+        # why does't this print prompts inside of check_access()?
+        #access = scanner.check_access(int_id)  #scan and access happen every 1 second
+        # if access == True:
+        #     print("Door opened")
+        # else:
+        #     print("No access. Try again...")
+
+        # If I want to stop scanning by typing a letter and not stop the entire function... what can I do?
+        ''' if access == True:
+                #green LED lights up and actuator contracts
             else:
-                print("Entering admin mode.", end="", flush=True)
-                time.sleep(0.5)
-                print(".", end="", flush=True)
-                time.sleep(0.5)
-                print(".", flush=True)
-                time.sleep(0.5)
-                break
-            # why does't this print prompts inside of check_access()?
-            #access = scanner.check_access(int_id)  #scan and access happen every 1 second
-            # if access == True:
-            #     print("Door opened")
-            # else:
-            #     print("No access. Try again...")
+                red LED lights up and buzzer buzzs continuously
+        '''
 
-            # If I want to stop scanning by typing a letter and not stop the entire function... what can I do?
-            ''' if access == True:
-                    #green LED lights up and actuator contracts
-                else:
-                    red LED lights up and buzzer buzzs continuously
-            '''
-
+display_init_choices()
+state = safe_int_input("\nEnter Number: ")
+time.sleep(0.3)
+while True:
+    if state == Init_state.ADMIN.value:
+        admin_mode()
+        continue
+    elif state == Init_state.NORMAL.value:
+        normal_mode()
+        continue
     else:
         print("Invalid input, enter a number from the available choices again")
+
 
