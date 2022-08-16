@@ -75,13 +75,14 @@ def remove_person():
             
     print("removed")
 
-# def edit_Person():
-#     view_data()
-#     new_data = []
+def edit_Person():
+    view_data()
+    new_data = []
 
 
 # based on choice input, handles which function to execute. If error occurs, prompt for a new choice entry
-def select_mode():
+# Question: This was my original code to test if add and remove worked. And immediately after adding or removing it exits while loop. Arer there some drawbacks ro it?
+def select_mode(): # anything bad about this? 
     while True:
         mode_choice = input("Type 'a'(lowercase) to add a person's information or 'd' to add: ")
         if (mode_choice == 'a'):
@@ -93,8 +94,6 @@ def select_mode():
         else:
             print("Error, please start over")
             select_mode()
-
-
 
 def safe_int_input():
     num_retries = 3
@@ -114,8 +113,6 @@ with open(filename) as json_file:
     # Question: open file first?
     # Or, write a function to open file in different modes and pass a parameter to see
     # what mode to use? I'll figure out tomorrow morning.
-
-
     name, id = add_person()
     x = {"firstname": name, "ID#": id}
     #y = {"firstname": "Joseph", "age": 29, "ID#": 1823908214214}  # what's being added
