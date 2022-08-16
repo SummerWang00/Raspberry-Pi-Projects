@@ -28,12 +28,12 @@ def add_person():
         print("\nScanner set up...")
         int_ID = scan()
         name = input("Please enter name: ")
-        print(f"You entered:Name: {name} and ID#: {int_ID}")
+        print(f"You entered: \nName: {name} and ID#: {int_ID}")
         confirm = input("Confirm your entry? Enter y to continue, n to start over: ")
         if confirm == 'y':
             add_to_database(name, int_ID)
             print("Added!")
-        add_another_prompts()
+            add_another_prompts()
 
     elif state == Admin_add_state.TYPE.value:
         print("\nEnter data to add to database")
@@ -44,7 +44,7 @@ def add_person():
         if confirm == 'y':
             add_to_database(name, int_ID)
             print("Added!\n")
-        add_another_prompts()
+            add_another_prompts()
 
     elif state == Admin_add_state.SELECT.value:
         print("You chose to select... Going back to initial menu. Give me one second\n")
@@ -62,8 +62,6 @@ def add_another_prompts():
         add_person()
     else:
         print("Add no more.\n")
-        time.sleep(0.5)
-
 
 # deletes a person's data, find the person through unique identifiers, could be name or ID.
 def remove_person():
@@ -72,12 +70,12 @@ def remove_person():
     # file opening
     with open(file, "r") as f:
         temp_data = json.load(f)
-        name_data = temp_data["names"]
-        print(json.dumps(name_data, indent=4))  #prints every person in database
+        name_data = temp_data["names"]  #stripped "names"
+        #print(json.dumps(name_data, indent=4))  #prints every person in database
         data_length = len(name_data) - 1
 
     print("which index number would you like to delete?")
-    option = input(f"Select a number in 1-{data_length+1}")
+    option = input(f"Select a number in 1-{data_length+1}: ")
     i = 0
     # find the index the user wants to delete
     for entry in name_data:
@@ -124,7 +122,7 @@ def display_data():
             name = entry["name"]
             int_uid = entry["ID#"]
             print(f"Index#: {i}")
-            print(f"Name #{i} is: {name}")
+            print(f"Name: {name}")
             print(f"ID#: {int_uid}", end="\n\n")
             i = i+1
 
@@ -307,7 +305,8 @@ while True:
                 else:
                     red LED lights up and buzzer buzzs continuously
             '''
-
+    elif state == Init_state.SELECT.value:
+        continue
     else:
         print("Invalid input, enter a number from the available choices again")
 
