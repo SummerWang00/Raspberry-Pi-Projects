@@ -1,4 +1,4 @@
-# Welcome to my Raspberry Pi Repository!
+# Welcome to my Raspberry Pi Project Repository!
 This is a repo for my Raspberry Pi projects including internship projects. All the source code are either taken from the open source PN532 module example code or written by me.
 I am learning embedded systems and I hope to create exciting projects absed on the Raspberry Pi microcontroller.
 I am going to utilize this repo to organize my code, pictures/links to resources of my projects on Notion page. 
